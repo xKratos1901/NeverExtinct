@@ -21,8 +21,8 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
     uint256 public tokenId = 0;
     uint256 public limitPrivateSale = 1;
     uint256 public limitPublicSale = 1;
-    uint256 public supply = 2; // 5000
-    uint256 public privateSupply = 7; // 500
+    uint256 public supply = 5000;
+    uint256 public privateSupply= 5500;
     bool privateSale = true;
     bool publicSale = false;
     bool pause = false;
@@ -34,8 +34,8 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
     constructor() ERC721("Never Extinct League", "NXT") {
         mintedPerWallet[msg.sender] = 0;
     }
-
-    function privateMint() public payable {
+   
+     function privateMint() public {
         require(!pause, "Contract it's paused");
         require(privateSale, "Private Sale Ended");
         itswhitelisted = whitelistedAddresses[msg.sender];
@@ -51,7 +51,7 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
         _safeMint(msg.sender, tokenId);
     }
 
-    function publicMint() public payable {
+     function publicMint() public {
         require(!pause, "Contract it's paused");
         require(tokenId < supply, "Supply exceeded");
         require(publicSale, "Public Sale still waiting");
