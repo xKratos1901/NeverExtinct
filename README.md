@@ -1,18 +1,31 @@
-# Basic Sample Hardhat Project
+# NeverExtinct - Contracts
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
-
-Try running some of the following tasks:
+## For local deploy
 
 ```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
+cp .env.example .env
+npm run compile
+npm run chain
 ```
-# NeverExtinct
-address: 0x2DFCb74b2A7EA6bB8Fc2fc0614942d7fFe44Cd99
-chain: Rinkeby
+
+> in another terminal window
+
+```shell
+npm run deploy:local
+```
+
+## For Testnet deploy
+
+```shell
+cp .env.example .env
+
+```
+
+**Insert your alchemy api key, add deployer private key**
+
+> in another terminal window
+
+```shell
+npm run compile
+npm run deploy:goerli
+```
