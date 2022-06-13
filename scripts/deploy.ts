@@ -14,7 +14,7 @@ const constants = {
   symbol: "NXT",
   supply: ethers.utils.parseUnits("5000", "ether"),
   privateSupply: ethers.utils.parseUnits("500", "ether"),
-  minterAddress: process.env.MINTER_ADDRESS ?? "",
+  minterAddress: process.env.MINTER_ADDRESS,
 };
 
 const deploy = async (
@@ -74,24 +74,27 @@ async function main() {
     gasPrice,
   };
   const NeverExtinct = await deploy("NeverExtinct", args, overrides);
-
+  // eslint-disable-next-line
+  const [_, addr1] = await ethers.getSigners();
   contracts.push(NeverExtinct);
 
-  // deployer adds user as minter
-  await NeverExtinct.contract.addUser(constants.minterAddress);
-  // check if user is minter
-  const isUserMinter = await NeverExtinct.contract.itsWhitelisted(
-    constants.minterAddress
-  );
+  if (process.env.HARDHAT_NETWORK === "hardhat") {
+    const addressToTest = constants.minterAddress ?? addr1.address;
 
-  if (isUserMinter === true) {
-    console.log(
-      chalk.bgGreen(
-        `SUCCESS!\n${constants.minterAddress} has been set as a minter`
-      )
+    // deployer adds user as minter
+    await NeverExtinct.contract.addUser(addressToTest);
+    // check if user is minter
+    const isUserMinter = await NeverExtinct.contract.itsWhitelisted(
+      addressToTest
     );
-  } else {
-    console.log(chalk.bgRed("Oh no, something went wrong"));
+
+    if (isUserMinter === true) {
+      console.log(
+        chalk.bgGreen(`SUCCESS!\n${addressToTest} has been set as a minter`)
+      );
+    } else {
+      console.log(chalk.bgRed("Oh no, something went wrong"));
+    }
   }
 
   const contractDetails = {
