@@ -10,9 +10,11 @@ const gasLimit = 5000000; // 5 million
 const gasPrice = 5000000000; // 5 gwei
 
 const constants = {
-  name: "Onramper Test Token",
-  symbol: "OTT",
-  totalSupply: ethers.utils.parseUnits("100000000", "ether"), // 100 million with 18 decimals
+  name: "Never Extinct League",
+  symbol: "NXT",
+  supply: ethers.utils.parseUnits("5000", "ether"),
+  privateSupply: ethers.utils.parseUnits("500", "ether"),
+  minterAddress: process.env.MINTER_ADDRESS ?? "",
 };
 
 const deploy = async (
@@ -65,29 +67,41 @@ async function main() {
 
   // this array stores the data for contract verification
   const contracts = [];
-  const [deployer] = await ethers.getSigners();
   // We get the contract to deploy
-  const args = [constants.name, constants.symbol, constants.totalSupply];
+  const args: any[] = [];
   const overrides = {
     gasLimit,
     gasPrice,
   };
-  const MockERC20 = await deploy("MockERC20", args, overrides);
+  const NeverExtinct = await deploy("NeverExtinct", args, overrides);
 
-  contracts.push(MockERC20);
+  contracts.push(NeverExtinct);
 
-  const bigNumberBalance = await MockERC20.contract.balanceOf(deployer.address);
-  const deployerBalance = ethers.utils.formatEther(bigNumberBalance);
+  // deployer adds user as minter
+  await NeverExtinct.contract.addUser(constants.minterAddress);
+  // check if user is minter
+  const isUserMinter = await NeverExtinct.contract.itsWhitelisted(
+    constants.minterAddress
+  );
 
-  const tokenDetails = {
-    "Token Address:": MockERC20.contract.address,
+  if (isUserMinter === true) {
+    console.log(
+      chalk.bgGreen(
+        `SUCCESS!\n${constants.minterAddress} has been set as a minter`
+      )
+    );
+  } else {
+    console.log(chalk.bgRed("Oh no, something went wrong"));
+  }
+
+  const contractDetails = {
+    "Contract Address:": NeverExtinct.contract.address,
     Name: constants.name,
     Symbol: constants.symbol,
-    "Deployer Balance": deployerBalance,
   };
 
   // eslint-disable-next-line
-  console.table(tokenDetails);
+  console.table(contractDetails);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
