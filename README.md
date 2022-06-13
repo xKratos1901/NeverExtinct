@@ -14,3 +14,5 @@ node scripts/sample-script.js
 npx hardhat help
 ```
 # NeverExtinct
+address: 0x2DFCb74b2A7EA6bB8Fc2fc0614942d7fFe44Cd99
+chain: Rinkeby
