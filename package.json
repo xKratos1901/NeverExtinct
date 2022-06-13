@@ -44,7 +44,7 @@
     "coverage": "hardhat coverage --network hardhat",
     "compile": "prettier --write 'contracts/**/*.sol' && hardhat clean && hardhat compile",
     "deploy:local": "hardhat clean && hardhat run scripts/deploy.ts --network hardhat",
-    "deploy:ropsten": "hardhat clean && hardhat run scripts/deploy.ts --network ropsten",
+    "deploy:goerli": "hardhat clean && hardhat run scripts/deploy.ts --network goerli",
     "deploy:mainnet": "hardhat clean && hardhat run scripts/deploy.ts --network mainnet",
     "accounts": "hardhat accounts",
     "balance": "hardhat balance",
