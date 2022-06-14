@@ -22,24 +22,30 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
     uint256 public limitPrivateSale = 1;
     uint256 public limitPublicSale = 1;
     uint256 public supply = 5000;
-    uint256 public privateSupply= 5500;
-    bool privateSale = true;
-    bool publicSale = false;
-    bool pause = false;
-    bool itswhitelisted = false;
+    uint256 public privateSupply = 500;
+    //? Visibility of these variables?
+    bool isPrivateSale = false;
+    bool isPublicSale = true; // Can we ahve both at the same time? if not, we can have 1 or the other.
+    bool isPaused = false;
+    bool isWhitelisted = false;
 
     mapping(address => bool) public whitelistedAddresses;
     mapping(address => uint256) public mintedPerWallet;
 
+    event WhitelistSingle(address user);
+    event WhitelistMany(address[] users);
+    event PublicMint(address[] users);
+
     constructor() ERC721("Never Extinct League", "NXT") {
         mintedPerWallet[msg.sender] = 0;
+        whitelistedAddresses[msg.sender] = true;
     }
-   
-     function privateMint() public {
-        require(!pause, "Contract it's paused");
-        require(privateSale, "Private Sale Ended");
-        itswhitelisted = whitelistedAddresses[msg.sender];
-        require(itswhitelisted, "Not Whitelisted");
+
+    function privateMint() public {
+        require(!isPaused, "Contract it's paused");
+        require(isPrivateSale, "Private Sale Ended");
+        isWhitelisted = whitelistedAddresses[msg.sender];
+        require(isWhitelisted, "Not Whitelisted");
         require(
             mintedPerWallet[msg.sender] < limitPrivateSale,
             "Limit exceeded"
@@ -51,10 +57,10 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
         _safeMint(msg.sender, tokenId);
     }
 
-     function publicMint() public {
-        require(!pause, "Contract it's paused");
+    function publicMint() public {
+        require(!isPaused, "Contract it's paused");
         require(tokenId < supply, "Supply exceeded");
-        require(publicSale, "Public Sale still waiting");
+        require(isPublicSale, "Public Sale still waiting");
         require(
             mintedPerWallet[msg.sender] < limitPublicSale,
             "Limit exceeded"
@@ -90,23 +96,25 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
             address user = _users[i];
             whitelistedAddresses[user] = true;
         }
+        emit WhitelistMany(_users);
     }
 
     function addUser(address _userWhitelist) public onlyOwner {
         whitelistedAddresses[_userWhitelist] = true;
+        emit WhitelistSingle(_userWhitelist);
     }
 
-    function Pause(bool _state) public onlyOwner {
-        pause = _state;
+    function setIsPaused(bool _state) public onlyOwner {
+        isPaused = _state;
     }
 
-    function PublicSale() public onlyOwner {
-        privateSale = false;
-        publicSale = true;
+    function getIsPaused() public view returns (bool) {
+        return isPaused;
     }
 
-    function itsPaused() public view returns (bool) {
-        return pause;
+    function publicSale() public onlyOwner {
+        isPrivateSale = false;
+        isPublicSale = true;
     }
 
     function tokenURI(uint256 _tokenIds)

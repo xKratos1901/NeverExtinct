@@ -1,5 +1,13 @@
 # NeverExtinct - Contracts
 
+## To test
+
+```shell
+npm run compile
+npm run typechain
+npm run test
+```
+
 ## For local deploy
 
 ```shell
