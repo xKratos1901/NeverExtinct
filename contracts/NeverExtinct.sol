@@ -31,6 +31,13 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
     mapping(address => bool) public whitelistedAddresses;
     mapping(address => uint256) public mintedPerWallet;
 
+    event whitelisted(address[] User);
+    event mint(
+        address User,
+        uint256 tokenId,
+        uint256 time
+        ); //new event; emited on every mint
+
     constructor() ERC721("Never Extinct League", "NXT") {
         mintedPerWallet[msg.sender] = 0;
     }
@@ -49,6 +56,7 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
         tokenId = _tokenId.current();
         tokenId;
         _safeMint(msg.sender, tokenId);
+        emit mint(msg.sender,tokenId,block.timestamp);
     }
 
      function publicMint() public {
@@ -64,6 +72,7 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
         tokenId = _tokenId.current();
         tokenId;
         _safeMint(msg.sender, tokenId);
+        emit mint(msg.sender,tokenId,block.timestamp);
     }
 
     function teamSupply(uint256 _amount) public onlyOwner {
@@ -75,6 +84,7 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
             tokenId = _tokenId.current();
             tokenId;
             _safeMint(msg.sender, tokenId);
+            emit mint(msg.sender,tokenId,block.timestamp);
         }
     }
 
@@ -90,6 +100,7 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
             address user = _users[i];
             whitelistedAddresses[user] = true;
         }
+        emit whitelisted(_users);
     }
 
     function addUser(address _userWhitelist) public onlyOwner {
@@ -108,6 +119,18 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
     function itsPaused() public view returns (bool) {
         return pause;
     }
+
+    function setLimitPrivat(uint256 _limit) public onlyOwner{
+        limitPrivateSale = _limit;
+    }  //new function
+
+    function setLimitPublic(uint256 _limits) public onlyOwner{
+        limitPublicSale = _limits;
+    } //new function
+
+    function getTokenId() public view returns(uint256) {
+        return tokenId;
+    }  //function to retrieve tokenId
 
     function tokenURI(uint256 _tokenIds)
         public
