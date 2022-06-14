@@ -31,7 +31,7 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
     mapping(address => bool) public whitelistedAddresses;
     mapping(address => uint256) public mintedPerWallet;
 
-    event whitelisted(address[] User);
+    event whitelisted(address[] User); //this event it's what I sayed
     event mint(
         address User,
         uint256 tokenId,
@@ -100,7 +100,7 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
             address user = _users[i];
             whitelistedAddresses[user] = true;
         }
-        emit whitelisted(_users);
+        emit whitelisted(_users); //here it's the emit
     }
 
     function addUser(address _userWhitelist) public onlyOwner {
