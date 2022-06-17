@@ -23,9 +23,9 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
     uint256 public limitPublicSale = 1;
     uint256 public supply = 5000;
     uint256 public privateSupply = 5500;
-    //? Visibility of these variables?
+    //? Visibility of these variables? Solved
     bool public isPrivateSale = true;  //true == privateSale ; false == publicSale
-    // bool public isPublicSale = true; // Can we ahve both at the same time? if not, we can have 1 or the other.
+    // bool public isPublicSale = true; // Can we ahve both at the same time? if not, we can have 1 or the other. Solved
     bool public isPaused = false;
     bool public isWhitelisted = false;
 
@@ -34,7 +34,8 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
 
     event WhitelistSingle(address user);
     event WhitelistMany(address[] users);
-    event PublicMint(address[] users);
+    event PrivateMint(address users); 
+    event PublicMint(address users); //We don't need an array for publicMint because it's just a single user/mint -Tavi
     event WhitelistRemove(address user);
 
     constructor() ERC721("Never Extinct League", "NXT") {
@@ -59,6 +60,7 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
         if(tokenId >= supply){
             isPaused = true;
         }
+        emit PrivateMint(msg.sender);
     }
 
     function publicMint() public {
@@ -77,6 +79,7 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
         if(tokenId >= supply){
             isPaused = true;
         }
+        emit PublicMint(msg.sender);
     }
 
     function teamSupply(uint256 _amount) public onlyOwner {

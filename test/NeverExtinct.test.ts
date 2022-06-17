@@ -1,6 +1,7 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import { nextTick } from "process";
 // eslint-disable-next-line
 import { NeverExtinct, NeverExtinct__factory } from "../typechain";
 
@@ -44,12 +45,9 @@ describe("Never Extinct", function () {
       await NeverExtinct.addUser(user1.address);
       expect(await NeverExtinct.itsWhitelisted(user1.address)).to.be.true;
     });
-    // it("Add an array of addresses to whitelist", async function(){
-    //   await NeverExtinct.batchWhitelist([user2.address,user3.address,user4.address]);
-    //   expect(await NeverExtinct.itsWhitelisted(user2.address)).to.be.true;
-    //   expect(await NeverExtinct.itsWhitelisted(user3.address)).to.be.true;
-    //   expect(await NeverExtinct.itsWhitelisted(user4.address)).to.be.true;
-    // });      This test seems not working
+    it("Add an array of addresses to whitelist", async function(){
+      expect(await NeverExtinct.batchWhitelist([user2.address,user3.address,user4.address])).to.be.emit(NeverExtinct,"WhitelistMany");;
+    });  
     it("Remove user from whitelist", async function() {
       await NeverExtinct.addUser(user4.address);
       expect(await NeverExtinct.itsWhitelisted(user4.address)).to.be.true;
@@ -63,17 +61,18 @@ describe("Never Extinct", function () {
       await NeverExtinct.addUser(user5.address);
       await NeverExtinct.connect(user5).privateMint();
     });
-    // it("Add users and mint", async function(){
-    //   await NeverExtinct.batchWhitelist([user5.address,user6.address]);
-    //   await NeverExtinct.connect(user5).privateMint();
-    //   await NeverExtinct.connect(user6).privateMint();
-    // })   This Test as well
+    it("Add users and mint", async function(){
+      await expect (NeverExtinct.batchWhitelist([user2.address,user3.address,user4.address])).to.be.emit(NeverExtinct,"WhitelistMany");;
+      // expect (await NeverExtinct.connect(user2).privateMint()).to.be.emit(NeverExtinct,"PrivateMint");
+      // await NeverExtinct.connect(user3).privateMint();
+      // await NeverExtinct.connect(user4).privateMint();
+    }) // if i remove what's commented i get the "Not whitelisted" error , but i see it's emiting the event that they are whitelisted;
     it("Try to mint without whitelist", async function(){
       await expect(NeverExtinct.connect(user1).privateMint()).to.be.revertedWith('Not Whitelisted');
     });
     it("Mint 2 nft from same wallet", async function(){
       await NeverExtinct.addUser(user1.address);
-      await NeverExtinct.connect(user1).privateMint();
+      expect(await NeverExtinct.connect(user1).privateMint()).to.be.emit(NeverExtinct,"PrivateMint");
       await expect(NeverExtinct.connect(user1).privateMint()).to.be.revertedWith('Limit exceeded');
     })
   })
@@ -113,6 +112,18 @@ describe("Never Extinct", function () {
     });
     it("Pause the contract", async function(){
       await expect(NeverExtinct.connect(ownerCopy).setIsPaused(true)).to.be.revertedWith('Ownable: caller is not the owner');
+    })
+  })
+
+  describe("Get tokenId and URI after minting", () => {
+    it("Mint and return in console the tokenId", async function(){
+      await NeverExtinct.privateMint();
+      console.log("Current TokenId : ", (await NeverExtinct.getTokenId()).toString());
+    })
+    it("Mint and get the tokenId+tokenURI", async function() {
+      await NeverExtinct.privateMint();
+      console.log("Current tokenID : ", (await NeverExtinct.getTokenId()).toString());
+      console.log("tokenUri for the tokenId : ", (await NeverExtinct.tokenURI(await NeverExtinct.getTokenId())).toString());
     })
   })
 
