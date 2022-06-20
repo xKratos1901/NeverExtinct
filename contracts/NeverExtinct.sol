@@ -11,11 +11,11 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract NeverExtinct is ERC721Enumerable, Ownable {
+contract NeverExtinct is ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenId;
     uint256 public tokenId = 0;
@@ -83,9 +83,10 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
     }
 
     function teamSupply(uint256 _amount) public onlyOwner {
-        require(tokenId >= supply, "Minting not ended");
-        require(tokenId <= privateSupply, "Supply ended");
-        require(_amount <= privateSupply - tokenId, "Supply exceeded");
+        // require(tokenId >= supply, "Minting not ended"); //
+        // require(tokenId <= privateSupply, "Supply ended");
+        // require(_amount <= privateSupply - tokenId, "Supply exceeded");
+        require(isPaused, "Contract it's not paused");
         for (uint256 i = 1; i <= _amount; i++) {
             _tokenId.increment();
             tokenId = _tokenId.current();
@@ -153,7 +154,7 @@ contract NeverExtinct is ERC721Enumerable, Ownable {
         return
             string(
                 abi.encodePacked(
-                    "https://bafybeibnzvcogpfxvcxqiz4gt2xakihcyyspvsz5vrieonca25i53zpv7y.ipfs.nftstorage.link/",
+                    "https://nftstorage.link/ipfs/bafybeigerkfsz4ejeyeo5m3gtqvbv5nfipuxrgq3arerzdcbwfshlnwo6m/",
                     Strings.toString(_tokenIds),
                     ".json"
                 )

@@ -115,6 +115,22 @@ describe("Never Extinct", function () {
     })
   })
 
+  describe("Mint on team supply", () =>{
+    it("Mint on team supply", async function(){
+     await NeverExtinct.setIsPaused(true);
+     expect(await NeverExtinct.getIsPaused()).to.be.true;
+      await NeverExtinct.connect(owner).teamSupply(5);
+    }),
+    it("Mint from another address and fail",async function(){
+      await NeverExtinct.setIsPaused(true);
+      await expect( NeverExtinct.connect(ownerCopy).teamSupply(5)).to.be.revertedWith('Ownable: caller is not the owner');
+    }),
+    it("Do a Private mint and try to mint the teamSupply",async function(){
+      await NeverExtinct.privateMint();
+      await expect(NeverExtinct.teamSupply(5)).to.be.revertedWith("Contract it's not paused");
+    })
+  })
+
   describe("Get tokenId and URI after minting", () => {
     it("Mint and return in console the tokenId", async function(){
       await NeverExtinct.privateMint();
@@ -126,5 +142,4 @@ describe("Never Extinct", function () {
       console.log("tokenUri for the tokenId : ", (await NeverExtinct.tokenURI(await NeverExtinct.getTokenId())).toString());
     })
   })
-
 });
