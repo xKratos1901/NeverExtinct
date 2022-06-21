@@ -142,4 +142,18 @@ describe("Never Extinct", function () {
       console.log("tokenUri for the tokenId : ", (await NeverExtinct.tokenURI(await NeverExtinct.getTokenId())).toString());
     })
   })
-});
+
+  describe("Function test", () => {
+    it("mintCount", async function(){
+      await NeverExtinct.privateMint();
+      expect (await NeverExtinct.mintCount(owner.address)).to.be.equal(1);
+    });
+    it("getLimitPrivate test", async function(){
+      expect (await NeverExtinct.getLimitPrivate()).to.be.equal(1);
+    });
+    it("getLimitPublic",async function(){
+      expect (await NeverExtinct.getLimitPublic()).to.be.equal(1);
+    })
+    })
+  });
+

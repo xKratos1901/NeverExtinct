@@ -144,6 +144,18 @@ contract NeverExtinct is ERC721, Ownable {
         return tokenId;
     }
 
+    function mintCount(address user) public view returns (uint256) {
+        return mintedPerWallet[user];
+    }
+
+    function getLimitPrivate() public view returns (uint256) {
+        return limitPrivateSale;
+    }
+    
+    function getLimitPublic() public view returns (uint256) {
+        return limitPublicSale;
+    }
+
     function tokenURI(uint256 _tokenIds)
         public
         view
@@ -154,7 +166,7 @@ contract NeverExtinct is ERC721, Ownable {
         return
             string(
                 abi.encodePacked(
-                    "https://nftstorage.link/ipfs/bafybeigerkfsz4ejeyeo5m3gtqvbv5nfipuxrgq3arerzdcbwfshlnwo6m/",
+                    "https://nftstorage.link/ipfs/bafybeicg633nzknd5ghdscoffahtyjwe4knjhugrudzggqn3een7eplcu4/",
                     Strings.toString(_tokenIds),
                     ".json"
                 )
