@@ -23,9 +23,7 @@ contract NeverExtinct is ERC721, Ownable {
     uint256 public limitPublicSale = 1;
     uint256 public supply = 5000;
     uint256 public privateSupply = 5500;
-    //? Visibility of these variables? Solved
-    bool public isPrivateSale = true;  //true == privateSale ; false == publicSale
-    // bool public isPublicSale = true; // Can we ahve both at the same time? if not, we can have 1 or the other. Solved
+    bool public isPrivateSale = true;
     bool public isPaused = false;
     bool public isWhitelisted = false;
 
@@ -34,8 +32,8 @@ contract NeverExtinct is ERC721, Ownable {
 
     event WhitelistSingle(address user);
     event WhitelistMany(address[] users);
-    event PrivateMint(address users); 
-    event PublicMint(address users); //We don't need an array for publicMint because it's just a single user/mint -Tavi
+    event PrivateMint(address users);
+    event PublicMint(address users);
     event WhitelistRemove(address user);
 
     constructor() ERC721("Never Extinct League", "NXT") {
@@ -57,7 +55,7 @@ contract NeverExtinct is ERC721, Ownable {
         tokenId = _tokenId.current();
         tokenId;
         _safeMint(msg.sender, tokenId);
-        if(tokenId >= supply){
+        if (tokenId >= supply) {
             isPaused = true;
         }
         emit PrivateMint(msg.sender);
@@ -76,16 +74,13 @@ contract NeverExtinct is ERC721, Ownable {
         tokenId = _tokenId.current();
         tokenId;
         _safeMint(msg.sender, tokenId);
-        if(tokenId >= supply){
+        if (tokenId >= supply) {
             isPaused = true;
         }
         emit PublicMint(msg.sender);
     }
 
     function teamSupply(uint256 _amount) public onlyOwner {
-        // require(tokenId >= supply, "Minting not ended"); //
-        // require(tokenId <= privateSupply, "Supply ended");
-        // require(_amount <= privateSupply - tokenId, "Supply exceeded");
         require(isPaused, "Contract it's not paused");
         for (uint256 i = 1; i <= _amount; i++) {
             _tokenId.increment();
@@ -118,7 +113,7 @@ contract NeverExtinct is ERC721, Ownable {
     function removeUser(address _userRemoved) public onlyOwner {
         whitelistedAddresses[_userRemoved] = false;
         emit WhitelistRemove(_userRemoved);
-    } // function to remove user from whitelist
+    }
 
     function setIsPaused(bool _state) public onlyOwner {
         isPaused = _state;
@@ -129,16 +124,16 @@ contract NeverExtinct is ERC721, Ownable {
     }
 
     function changeSale(bool _state) public onlyOwner {
-        isPrivateSale = _state; //function changed to set true or false for private/publi sale
+        isPrivateSale = _state;
     }
 
-    function changeLimitPrivat(uint256 _limit) public onlyOwner{
+    function changeLimitPrivat(uint256 _limit) public onlyOwner {
         limitPrivateSale = _limit;
-    } //function for changing limit/wallet
+    }
 
-    function changeLimitPublic(uint256 _limits) public onlyOwner{
+    function changeLimitPublic(uint256 _limits) public onlyOwner {
         limitPublicSale = _limits;
-    } //function for changing limit/wallet
+    }
 
     function mintCount(address user) public view returns (uint256) {
         return mintedPerWallet[user];
@@ -147,22 +142,22 @@ contract NeverExtinct is ERC721, Ownable {
     function getLimitPrivate() public view returns (uint256) {
         return limitPrivateSale;
     }
-    
+
     function getLimitPublic() public view returns (uint256) {
         return limitPublicSale;
     }
 
-    function setLimitPrivat(uint256 _limit) public onlyOwner{
+    function setLimitPrivat(uint256 _limit) public onlyOwner {
         limitPrivateSale = _limit;
-    }  //new function
+    } 
 
-    function setLimitPublic(uint256 _limits) public onlyOwner{
+    function setLimitPublic(uint256 _limits) public onlyOwner {
         limitPublicSale = _limits;
-    } //new function
+    } 
 
-    function getTokenId() public view returns(uint256) {
+    function getTokenId() public view returns (uint256) {
         return tokenId;
-    }  //function to retrieve tokenId
+    }
 
     function tokenURI(uint256 _tokenIds)
         public
