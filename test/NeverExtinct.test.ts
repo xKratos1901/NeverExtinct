@@ -153,7 +153,7 @@ describe("Never Extinct", function () {
     });
     it("getLimitPublic",async function(){
       expect (await NeverExtinct.getLimitPublic()).to.be.equal(1);
-    })
+    });
     })
   });
 
