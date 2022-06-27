@@ -7,7 +7,7 @@ import { ethers } from "hardhat";
 import chalk from "chalk";
 
 const gasLimit = 5000000; // 5 million
-const gasPrice = 5000000000; // 5 gwei
+const gasPrice = 100000000000; // 5 gwei
 
 const constants = {
   name: "Never Extinct League",
@@ -72,6 +72,7 @@ async function main() {
   const overrides = {
     gasLimit,
     gasPrice,
+    nonce:0,
   };
   const NeverExtinct = await deploy("NeverExtinct", args, overrides);
   // eslint-disable-next-line
@@ -96,11 +97,13 @@ async function main() {
       console.log(chalk.bgRed("Oh no, something went wrong"));
     }
   }
-
+ 
   const contractDetails = {
     "Contract Address:": NeverExtinct.contract.address,
     Name: constants.name,
     Symbol: constants.symbol,
+
+    
   };
 
   // eslint-disable-next-line

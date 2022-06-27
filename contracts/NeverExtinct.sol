@@ -24,7 +24,7 @@ contract NeverExtinct is ERC721, Ownable {
     uint256 public supply = 5000;
     uint256 public privateSupply = 5500;
     bool public isPrivateSale = true;
-    bool public isPaused = false;
+    bool public isPaused = true;
     bool public isWhitelisted = false;
 
     mapping(address => bool) public whitelistedAddresses;
@@ -149,11 +149,11 @@ contract NeverExtinct is ERC721, Ownable {
 
     function setLimitPrivat(uint256 _limit) public onlyOwner {
         limitPrivateSale = _limit;
-    } 
+    }
 
     function setLimitPublic(uint256 _limits) public onlyOwner {
         limitPublicSale = _limits;
-    } 
+    }
 
     function getTokenId() public view returns (uint256) {
         return tokenId;
